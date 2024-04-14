@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Conversation } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { SocketGateway } from './conversation.gateway';
 
 @Injectable()
 export class ConversationService {
-  constructor(private prismaService:PrismaService){}
+  constructor(private prismaService:PrismaService, private socketGateway: SocketGateway){}
     async sendConversationRequest(uniqueId: string, messageContent: string) {
         const chatUser = await this.prismaService.chatUser.upsert({
             where: { uniqueId: uniqueId },
@@ -25,6 +26,8 @@ export class ConversationService {
             },
             include: { messages: true, chatUser: true },
         });
+
+        this.socketGateway.server.emit('conversationRequest', { conversation });
     
         return conversation;
     }
@@ -37,7 +40,9 @@ export class ConversationService {
             content: messageContent
           }
         });
-    
+         // Emit a WebSocket event to notify clients about the new message
+        this.socketGateway.server.emit('messageCreated', message);
+
         return message;
     }
     
