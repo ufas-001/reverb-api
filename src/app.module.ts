@@ -7,12 +7,15 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma.service';
 import { ConversationModule } from './conversation/conversation.module';
 import { SocketGateway } from './conversation/conversation.gateway';
+import { RedisService } from './redis.service';
+import { RedisModule } from './redis/redis.module';
+import { RedisRepository } from './redis/redis.repository';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), UserModule, AuthModule, ConversationModule,],
+  }), UserModule, AuthModule, ConversationModule, RedisModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService, SocketGateway],
+  providers: [AppService, PrismaService, SocketGateway, RedisRepository],
 })
 export class AppModule {}

@@ -34,7 +34,7 @@ export class ConversationController {
       return this.conversationService.getPendingConversationRequests();
     }
     @Get("messages/:conversationId")
-    async getAllConversationMessages(@Param('conversationId') conversationId: number) {
+    async getAllConversationMessages(@Param('conversationId') conversationId: string) {
       const messages = await this.conversationService.getAllMessagesInConversation(conversationId)
       return messages
     }
