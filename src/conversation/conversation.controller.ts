@@ -12,7 +12,7 @@ export class ConversationController {
     }
 
     @Post(':conversationId/continue')
-    async continueConversation(@Body() body: any, @Param('conversationId') conversationId: number) {
+    async continueConversation(@Body() body: any, @Param('conversationId') conversationId: string) {
       const { senderType, senderId, messageContent } = body;
       const message = await this.conversationService.continueConversation(conversationId, senderType, messageContent);
       return message;

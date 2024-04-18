@@ -45,7 +45,7 @@ export class ConversationService {
       return null;
     }
   }
-  async continueConversation(conversationId: number, senderType: 'user' | 'admin', messageContent: string) {
+  async continueConversation(conversationId: string, senderType: 'user' | 'admin', messageContent: string) {
     try {
       // Construct the message object
       const message = {
