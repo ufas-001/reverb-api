@@ -9,7 +9,7 @@ export class RedisService {
   constructor(private readonly nestRedisService: NestRedisService) {
     // Connect to the Redis server with custom host and port
     this.redisClient = new Redis({
-      host: '127.0.0.1', // Replace with your Redis host
+      host: '64.226.94.169', // Replace with your Redis host
       port: 6379, // Replace with your Redis port
     });
   }
