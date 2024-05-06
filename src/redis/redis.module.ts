@@ -19,4 +19,8 @@ import Redis from 'ioredis';
   ],
   exports: ['REDIS'],
 })
-export class RedisModule {}
+export class RedisModule { }
+
+//  64.226.94.169
+
+// 127.0.0.1

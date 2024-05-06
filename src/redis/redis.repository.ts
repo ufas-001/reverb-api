@@ -14,7 +14,6 @@ export class RedisRepository {
     try {
       const data = await this.redisClient.get(key);
       if (data) {
-        console.log('Retrieved data from Redis:', data);
         return JSON.parse(data);
       } else {
         console.log('No data found in Redis for key:', key);
