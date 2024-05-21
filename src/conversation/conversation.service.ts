@@ -15,8 +15,10 @@ export class ConversationService {
   async sendConversationRequest(
     uniqueId: string,
     messageContent: string,
-  ): Promise<{ id: string; message: string } | null> {
+  ): Promise<{ conversationId: string; initialMessage: any } | null> {
     try {
+      const timestamp = new Date().toISOString();
+
       // Store conversation data in Redis
       const conversationData = await this.redisService.storeData(
         `conversation:${uniqueId}`,
@@ -24,9 +26,10 @@ export class ConversationService {
           uniqueId,
           messageContent,
           accepted: false,
+          createdAt: timestamp,
+          updatedAt: timestamp,
         },
       );
-      console.log('Stored conversation data:', conversationData);
 
       if (!conversationData) {
         // Handle the case where storing data in Redis fails
@@ -37,6 +40,8 @@ export class ConversationService {
       const initialMessage = {
         senderType: 'user', // Assuming the sender is a user for a new conversation request
         content: messageContent,
+        createdAt: timestamp,
+        updatedAt: timestamp,
       };
 
       // Push the initial message to the conversation's message list in Redis
@@ -46,18 +51,19 @@ export class ConversationService {
       );
 
       // Add the conversation ID to the set of pending conversation requests
-      const addToSetResult = await this.redisService.addToSet(
+      await this.redisService.addToSet(
         'pendingConversationRequests',
         JSON.stringify({ uniqueId, accepted: false }),
       );
+
       // Emit WebSocket event
       this.socketGateway.server.emit('conversationRequest', {
         uniqueId,
         messageContent,
       });
 
-      // Return the ID and message
-      return { id: uniqueId, message: messageContent };
+      // Return the ID and initial message
+      return { conversationId: uniqueId, initialMessage };
     } catch (error) {
       // Handle errors
       console.error('Error sending conversation request:', error);
@@ -70,10 +76,14 @@ export class ConversationService {
     messageContent: string,
   ) {
     try {
-      // Construct the message object
+      const timestamp = new Date().toISOString();
+
+      // Construct the message object with timestamps
       const message = {
         senderType,
         content: messageContent,
+        createdAt: timestamp,
+        updatedAt: timestamp,
       };
 
       // Push the message to the conversation's message list in Redis
@@ -109,28 +119,11 @@ export class ConversationService {
               `conversation:${conversationId}`,
             );
 
-            let parsedConversationData = null;
-
-            // Check if the retrieved data is an object
+            // Check if the retrieved data is valid
             if (
               typeof conversationData === 'object' &&
-              conversationData !== null
-            ) {
-              // No need to parse, assign directly
-              parsedConversationData = conversationData;
-            } else {
-              // Log an error if the retrieved data is not an object
-              console.error(
-                'Retrieved data is not an object:',
-                conversationData,
-              );
-              return null;
-            }
-
-            // Check if the conversation is accepted (assuming accepted is a boolean property)
-            if (
-              parsedConversationData &&
-              parsedConversationData.accepted === true
+              conversationData !== null &&
+              conversationData.hasOwnProperty('updatedAt') // Check if updatedAt exists
             ) {
               // Retrieve all messages associated with the conversation ID
               const conversationMessages = await this.redisService.getListItems(
@@ -143,13 +136,17 @@ export class ConversationService {
 
               // Add parsed messages to conversation data
               const updatedConversationData = {
-                ...parsedConversationData,
+                ...conversationData,
                 messages: parsedMessages,
-                updatedAt: new Date().toISOString(), // Add timestamp for object update
               };
 
               return updatedConversationData;
             } else {
+              // Log an error if the retrieved data is not valid
+              console.error(
+                'Invalid or missing conversation data:',
+                conversationData,
+              );
               return null;
             }
           } catch (error) {
@@ -160,9 +157,12 @@ export class ConversationService {
         }),
       );
 
-      return acceptedConversations.filter(
+      // Filter out conversations with null values
+      const filteredConversations = acceptedConversations.filter(
         (conversation) => conversation !== null,
       );
+
+      return filteredConversations;
     } catch (error) {
       // Handle overall error
       console.error('Error fetching accepted conversations:', error);
