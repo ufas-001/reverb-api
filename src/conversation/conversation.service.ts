@@ -140,8 +140,15 @@ export class ConversationService {
               const parsedMessages = conversationMessages.map((message) =>
                 JSON.parse(message),
               );
+
               // Add parsed messages to conversation data
-              return { ...parsedConversationData, messages: parsedMessages };
+              const updatedConversationData = {
+                ...parsedConversationData,
+                messages: parsedMessages,
+                updatedAt: new Date().toISOString(), // Add timestamp for object update
+              };
+
+              return updatedConversationData;
             } else {
               return null;
             }
@@ -153,15 +160,12 @@ export class ConversationService {
         }),
       );
 
-      // Filter out null values (conversations that are not accepted or do not exist)
-      const filteredConversations = acceptedConversations.filter(
+      return acceptedConversations.filter(
         (conversation) => conversation !== null,
       );
-
-      return filteredConversations;
     } catch (error) {
-      // Handle other errors (e.g., Redis service error)
-      console.error('Error retrieving accepted conversations:', error);
+      // Handle overall error
+      console.error('Error fetching accepted conversations:', error);
       return [];
     }
   }
