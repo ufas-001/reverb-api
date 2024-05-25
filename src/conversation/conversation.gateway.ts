@@ -24,8 +24,14 @@ export class SocketGateway {
     client: Socket,
     payload: { conversationId: string; senderType: 'user' | 'admin' },
   ) {
+    console.log(
+      `Received typing event from ${payload.senderType} for conversation ${payload.conversationId}`,
+    );
     this.server.emit(`userTyping:${payload.conversationId}`, {
       senderType: payload.senderType,
     });
+    console.log(
+      `Emitted userTyping event for conversation ${payload.conversationId}`,
+    );
   }
 }
