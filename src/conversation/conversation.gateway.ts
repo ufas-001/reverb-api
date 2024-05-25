@@ -1,10 +1,10 @@
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: "*",
-  }
+    origin: '*',
+  },
 })
 export class SocketGateway {
   @WebSocketServer() server: Server;
@@ -19,4 +19,13 @@ export class SocketGateway {
   }
 
   // Add more methods to handle other Socket.IO events if needed
+  @SubscribeMessage('typing')
+  handleTyping(
+    client: Socket,
+    payload: { conversationId: string; senderType: 'user' | 'admin' },
+  ) {
+    this.server.emit(`userTyping:${payload.conversationId}`, {
+      senderType: payload.senderType,
+    });
+  }
 }
