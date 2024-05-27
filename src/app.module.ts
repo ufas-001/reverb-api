@@ -10,11 +10,12 @@ import { SocketGateway } from './conversation/conversation.gateway';
 import { RedisService } from './redis.service';
 import { RedisModule } from './redis/redis.module';
 import { RedisRepository } from './redis/redis.repository';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), UserModule, AuthModule, ConversationModule, RedisModule],
+  }), UserModule, AuthModule, ConversationModule, RedisModule, ArticleModule],
   controllers: [AppController],
   providers: [AppService, PrismaService, SocketGateway, RedisRepository],
 })
