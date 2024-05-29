@@ -1,11 +1,18 @@
-import { Controller, Param, Post, Get, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Param,
+  Post,
+  Get,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CreateArticleDto } from './dto/article.dto';
+import { CreateArticleDto } from './dto/dto/article.dto';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
- 
   @Post('create/:userId')
   async createArticle(
     @Param('userId') userId: string,

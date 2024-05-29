@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { CreateArticleDto } from './dto/article.dto';
+import { CreateArticleDto } from './dto/dto/article.dto';
 
 @Injectable()
 export class ArticleService {
@@ -12,6 +12,7 @@ export class ArticleService {
         userId,
       },
     });
+
   }
 
   async getArticles(userId: number) {
@@ -21,7 +22,9 @@ export class ArticleService {
   }
 
   async updateArticle(id: number, data: CreateArticleDto) {
-    const bookmark = await this.prisma.articleLink.findUnique({ where: { id } });
+    const bookmark = await this.prisma.articleLink.findUnique({
+      where: { id },
+    });
     if (!bookmark) {
       throw new NotFoundException('Bookmark not found');
     }
