@@ -17,6 +17,7 @@ model User {
   password String
   conversations Conversation[]
   bookmarks    ArticleLink[] @relation("article")
+  preferences  UserPreferences? 
 }
 
 
@@ -59,4 +60,13 @@ model ArticleLink {
   updatedAt DateTime  @updatedAt
   userId    Int
   user      User @relation(fields: [userId], references: [id], name: "article")
+}
+
+model UserPreferences {
+  id            Int              @id @default(autoincrement())
+  backgroundColor String
+  textColor      String
+  bannerColor    String
+  userId         Int              @unique
+  user           User             @relation(fields: [userId], references: [id])
 }

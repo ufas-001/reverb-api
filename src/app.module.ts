@@ -11,12 +11,15 @@ import { RedisService } from './redis.service';
 import { RedisModule } from './redis/redis.module';
 import { RedisRepository } from './redis/redis.repository';
 import { ArticleModule } from './article/article.module';
+import { PreferenceService } from './preference/preference.service';
+import { PreferenceController } from './preference/preference.controller';
+import { PreferenceModule } from './preference/preference.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), UserModule, AuthModule, ConversationModule, RedisModule, ArticleModule],
-  controllers: [AppController],
-  providers: [AppService, PrismaService, SocketGateway, RedisRepository],
+  }), UserModule, AuthModule, ConversationModule, RedisModule, ArticleModule, PreferenceModule],
+  controllers: [AppController, PreferenceController],
+  providers: [AppService, PrismaService, SocketGateway, RedisRepository, PreferenceService],
 })
 export class AppModule {}
