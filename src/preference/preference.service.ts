@@ -14,25 +14,30 @@ export class PreferenceService {
     });
   }
 
-  async createPreferences(
+  async upsertPreferences(
     userId: number,
-    data: CreatePreferencesDto,
+    data: CreatePreferencesDto | UpdatePreferencesDto,
   ): Promise<UserPreferences> {
-    return this.prisma.userPreferences.create({
-      data: {
-        userId,
-        ...data,
-      },
-    });
-  }
-
-  async updatePreferences(
-    userId: number,
-    data: UpdatePreferencesDto,
-  ): Promise<UserPreferences> {
-    return this.prisma.userPreferences.update({
+    const existingPreferences = await this.prisma.userPreferences.findUnique({
       where: { userId },
-      data,
     });
+
+    if (existingPreferences) {
+      return this.prisma.userPreferences.update({
+        where: { userId },
+        data,
+      });
+    } else {
+      const createData: CreatePreferencesDto & { userId: number } = {
+        userId,
+        backgroundColor: (data as CreatePreferencesDto).backgroundColor,
+        textColor: (data as CreatePreferencesDto).textColor,
+        bannerColor: (data as CreatePreferencesDto).bannerColor,
+      };
+
+      return this.prisma.userPreferences.create({
+        data: createData,
+      });
+    }
   }
 }

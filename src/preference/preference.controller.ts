@@ -14,19 +14,11 @@ export class PreferenceController {
     return this.userPreferencesService.getPreferences(userId);
   }
 
-  @Post(':userId')
-  async createPreferences(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Body() data: CreatePreferencesDto,
-  ): Promise<UserPreferences> {
-    return this.userPreferencesService.createPreferences(userId, data);
-  }
-
   @Patch(':userId')
-  async updatePreferences(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Body() data: UpdatePreferencesDto,
+  async upsertPreferences(
+    @Param('userId') userId: number,
+    @Body() data: CreatePreferencesDto | UpdatePreferencesDto,
   ): Promise<UserPreferences> {
-    return this.userPreferencesService.updatePreferences(userId, data);
+    return this.userPreferencesService.upsertPreferences(userId, data);
   }
 }
