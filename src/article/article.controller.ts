@@ -4,7 +4,7 @@ import {
   Post,
   Get,
   Body,
-  Put,
+  Patch,
   Delete,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
@@ -13,29 +13,34 @@ import { CreateArticleDto } from './dto/dto/article.dto';
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
-  @Post('create/:userId')
+
+  @Post(':apiKey')
   async createArticle(
-    @Param('userId') userId: string,
+    @Param('apiKey') apiKey: string,
     @Body() createArticleDto: CreateArticleDto,
   ) {
-    return this.articleService.createArticle(+userId, createArticleDto);
+    return this.articleService.createArticle(apiKey, createArticleDto);
   }
 
-  @Get('/:userId')
-  async getArticles(@Param('userId') userId: string) {
-    return this.articleService.getArticles(+userId);
+  @Get(':apiKey')
+  async getArticles(@Param('apiKey') apiKey: string) {
+    return this.articleService.getArticles(apiKey);
   }
 
-  @Put('update/:id')
-  async updatearticle(
-    @Param('id') id: string,
+  @Patch(':id/:apiKey')
+  async updateArticle(
+    @Param('id') id: number,
+    @Param('apiKey') apiKey: string,
     @Body() updateArticleDto: CreateArticleDto,
   ) {
-    return this.articleService.updateArticle(+id, updateArticleDto);
+    return this.articleService.updateArticle(id, apiKey, updateArticleDto);
   }
 
-  @Delete('delete/:id')
-  async deleteArticle(@Param('id') id: string) {
-    return this.articleService.deleteArticle(+id);
+  @Delete(':id/:apiKey')
+  async deleteArticle(
+    @Param('id') id: number,
+    @Param('apiKey') apiKey: string,
+  ) {
+    return this.articleService.deleteArticle(id, apiKey);
   }
 }

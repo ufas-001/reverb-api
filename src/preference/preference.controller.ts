@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch, NotFoundException } from '@nestjs/common';
 import { UserPreferences } from '@prisma/client';
 import { PreferenceService } from './preference.service';
 import { CreatePreferencesDto } from './dto/preference.dto';
@@ -6,19 +6,27 @@ import { UpdatePreferencesDto } from './dto/updatePreference.dto';
 
 @Controller('preference')
 export class PreferenceController {
-  constructor(private userPreferencesService: PreferenceService) {}
-  @Get(':userId')
+  constructor(private userPreferenceService: PreferenceService) {}
+
+  @Get(':apiKey')
   async getPreferences(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('apiKey') apiKey: string,
   ): Promise<UserPreferences | null> {
-    return this.userPreferencesService.getPreferences(userId);
+    const preferences =
+      await this.userPreferenceService.getPreferencesByApiKey(apiKey);
+    if (!preferences) {
+      throw new NotFoundException(
+        'Preferences not found for the given API key',
+      );
+    }
+    return preferences;
   }
 
-  @Patch(':userId')
+  @Patch(':apiKey')
   async upsertPreferences(
-    @Param('userId') userId: number,
+    @Param('apiKey') apiKey: string,
     @Body() data: CreatePreferencesDto | UpdatePreferencesDto,
   ): Promise<UserPreferences> {
-    return this.userPreferencesService.upsertPreferences(userId, data);
+    return this.userPreferenceService.upsertPreferencesByApiKey(apiKey, data);
   }
 }

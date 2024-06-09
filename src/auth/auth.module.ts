@@ -5,9 +5,10 @@ import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { RedisRepository } from 'src/redis/redis.repository';
+import { ApiKeyService } from 'src/user/api-key.service';
 
 @Module({
-  providers: [AuthService, UserService, PrismaService, JwtService, RedisRepository],
+  providers: [AuthService, UserService, PrismaService, JwtService, RedisRepository, ApiKeyService],
   controllers: [AuthController]
 })
 export class AuthModule {}

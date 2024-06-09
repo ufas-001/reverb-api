@@ -12,7 +12,9 @@ export class AuthController {
 
     @Post("register")
     async registerUser(@Body() dto:CreateUserDto){
-        return await this.userService.create(dto)
+        const user = await this.userService.create(dto);
+        const apiKey = await this.userService.generateApiKey(user.id);
+        return { user, apiKey };
     }
 
     @Post("login")

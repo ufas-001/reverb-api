@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  MiddlewareConsumer,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -14,12 +19,40 @@ import { ArticleModule } from './article/article.module';
 import { PreferenceService } from './preference/preference.service';
 import { PreferenceController } from './preference/preference.controller';
 import { PreferenceModule } from './preference/preference.module';
+import { ApiKeyMiddleware } from './user/middleware/api-key.middleware';
+import { ApiKeyService } from './user/api-key.service';
+import { UserService } from './user/user.service';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }), UserModule, AuthModule, ConversationModule, RedisModule, ArticleModule, PreferenceModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    UserModule,
+    AuthModule,
+    ConversationModule,
+    RedisModule,
+    ArticleModule,
+    PreferenceModule,
+  ],
   controllers: [AppController, PreferenceController],
-  providers: [AppService, PrismaService, SocketGateway, RedisRepository, PreferenceService],
+  providers: [
+    AppService,
+    PrismaService,
+    SocketGateway,
+    RedisRepository,
+    PreferenceService,
+    ApiKeyService,
+    UserService
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ApiKeyMiddleware)
+      .forRoutes(
+        { path: 'widget/generate', method: RequestMethod.ALL },
+        { path: 'widget/customize', method: RequestMethod.ALL },
+      );
+  }
+}

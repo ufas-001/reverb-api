@@ -17,7 +17,8 @@ model User {
   password String
   conversations Conversation[]
   bookmarks    ArticleLink[] @relation("article")
-  preferences  UserPreferences? 
+  preferences     UserPreferences?
+  apiKey          ApiKey? 
 }
 
 
@@ -53,20 +54,34 @@ model Message {
 }
 
 model ArticleLink {
-  id        Int       @id @default(autoincrement())
-  header    String
-  link      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  userId    Int
-  user      User @relation(fields: [userId], references: [id], name: "article")
+  id             Int              @id @default(autoincrement())
+  header         String
+  link           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  userId         Int
+  user           User             @relation(fields: [userId], references: [id], name: "article")
+  apiKey         String         
+  apiKeyRelation ApiKey           @relation(fields: [apiKey], references: [key])
 }
 
 model UserPreferences {
-  id            Int              @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   backgroundColor String
-  textColor      String
-  bannerColor    String
-  userId         Int              @unique
-  user           User             @relation(fields: [userId], references: [id])
+  textColor       String
+  bannerColor     String
+  apiKey          String           @unique
+  userId          Int              @unique
+  apiKeyRelation  ApiKey           @relation(fields: [apiKey], references: [key])
+  user            User             @relation(fields: [userId], references: [id])
+}
+
+model ApiKey {
+  id              Int              @id @default(autoincrement())
+  key             String           @unique
+  userId          Int              @unique
+  user            User             @relation(fields: [userId], references: [id])
+  createdAt       DateTime         @default(now())
+  userPreferences UserPreferences? 
+  articleLinks    ArticleLink[]
 }
