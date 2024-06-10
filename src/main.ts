@@ -9,7 +9,15 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true
   }))
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:5501', // HTTP origin
+      'https://localhost:5501', // HTTPS origin
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true, // If you need to support credentials (cookies, authorization headers)
+  });
   await app.listen(8000);
 }
 bootstrap();
