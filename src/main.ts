@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { DynamicCorsMiddleware } from './dynamic-cors.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,15 +10,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true
   }))
-  app.enableCors({
-    origin: [
-      'http://localhost:5501', // HTTP origin
-      'https://localhost:5501', // HTTPS origin
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-    credentials: true, // If you need to support credentials (cookies, authorization headers)
-  });
+  app.use(new DynamicCorsMiddleware().use);
   await app.listen(8000);
 }
 bootstrap();
