@@ -62,6 +62,11 @@ export class ConversationService {
         messageContent,
       });
 
+      this.socketGateway.server.emit('messageCreated', {
+        uniqueId,
+        messageContent,
+      });
+
       // Return the ID and initial message
       return { conversationId: uniqueId, initialMessage };
     } catch (error) {
