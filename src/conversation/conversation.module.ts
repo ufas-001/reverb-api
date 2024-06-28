@@ -3,7 +3,6 @@ import { ConversationController } from './conversation.controller';
 import { ConversationService } from './conversation.service';
 import { PrismaService } from 'src/prisma.service';
 import { SocketGateway } from './conversation.gateway';
-import { RedisService } from 'src/redis.service';
 import { RedisRepository } from 'src/redis/redis.repository';
 
 

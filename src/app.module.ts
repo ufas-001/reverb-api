@@ -12,7 +12,6 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma.service';
 import { ConversationModule } from './conversation/conversation.module';
 import { SocketGateway } from './conversation/conversation.gateway';
-import { RedisService } from './redis.service';
 import { RedisModule } from './redis/redis.module';
 import { RedisRepository } from './redis/redis.repository';
 import { ArticleModule } from './article/article.module';
@@ -27,6 +26,7 @@ import { UserService } from './user/user.service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     UserModule,
     AuthModule,
@@ -43,7 +43,7 @@ import { UserService } from './user/user.service';
     RedisRepository,
     PreferenceService,
     ApiKeyService,
-    UserService
+    UserService,
   ],
 })
 export class AppModule {

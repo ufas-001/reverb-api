@@ -9,10 +9,18 @@ import Redis from 'ioredis';
     {
       provide: 'REDIS',
       useFactory: (configService: ConfigService) => {
+        const host = configService.get<string>('REDIS_HOST');
+        const port = configService.get<number>('REDIS_PORT');
+        const password = configService.get<string>('REDIS_PASSWORD');
+
+        console.log(
+          `Connecting to Redis at ${host}:${port} with password ${password}`,
+        );
+
         return new Redis({
-          host: configService.get('64.226.94.169'),
-          port: configService.get('6379'),
-          password: configService.get<string>('VerzoLive01&'),
+          host,
+          port,
+          password,
         });
       },
       inject: [ConfigService],
@@ -20,8 +28,4 @@ import Redis from 'ioredis';
   ],
   exports: ['REDIS'],
 })
-export class RedisModule { }
-
-//  64.226.94.169
-
-// 127.0.0.1
+export class RedisModule {}

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Conversation } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { SocketGateway } from './conversation.gateway';
-import { RedisService } from 'src/redis.service';
 import { RedisRepository } from 'src/redis/redis.repository';
 
 @Injectable()
