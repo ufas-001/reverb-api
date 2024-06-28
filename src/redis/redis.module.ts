@@ -12,6 +12,7 @@ import Redis from 'ioredis';
         return new Redis({
           host: configService.get('64.226.94.169'),
           port: configService.get('6379'),
+          password: configService.get<string>('VerzoLive01&'),
         });
       },
       inject: [ConfigService],
