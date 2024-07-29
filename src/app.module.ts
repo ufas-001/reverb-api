@@ -4,6 +4,9 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+
+import { PredictionGrpcService } from './grpc/prediction.service';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -44,6 +47,7 @@ import { UserService } from './user/user.service';
     PreferenceService,
     ApiKeyService,
     UserService,
+    PredictionGrpcService,
   ],
 })
 export class AppModule {
