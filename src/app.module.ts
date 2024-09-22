@@ -24,6 +24,7 @@ import { PreferenceModule } from './preference/preference.module';
 import { ApiKeyMiddleware } from './user/middleware/api-key.middleware';
 import { ApiKeyService } from './user/api-key.service';
 import { UserService } from './user/user.service';
+import { QuestionNodeModule } from './question-node/question-node.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UserService } from './user/user.service';
     RedisModule,
     ArticleModule,
     PreferenceModule,
+    QuestionNodeModule,
   ],
   controllers: [AppController, PreferenceController],
   providers: [

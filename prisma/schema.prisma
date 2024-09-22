@@ -6,74 +6,72 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String?
-  password String
+  id            Int              @id @default(autoincrement())
+  email         String           @unique
+  name          String?
+  password      String
   conversations Conversation[]
-  bookmarks    ArticleLink[] @relation("article")
-  preferences     UserPreferences?
-  apiKey          ApiKey? 
+  bookmarks     ArticleLink[]    @relation("article")
+  preferences   UserPreferences?
+  apiKey        ApiKey?
 }
-
-
 
 // user.model.prisma
 model ChatUser {
-  id        Int       @id @default(autoincrement())
-  uniqueId  String    @unique
-  createdAt DateTime  @default(now())
+  id            Int            @id @default(autoincrement())
+  uniqueId      String         @unique
+  createdAt     DateTime       @default(now())
   conversations Conversation[]
 }
 
 // conversation.model.prisma
 model Conversation {
-  id         Int        @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   adminId    Int?
-  accepted   Boolean    @default(false)
-  createdAt  DateTime   @default(now())
-  messages   Message[]  // Define the messages field as an array of Message
+  accepted   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  messages   Message[] // Define the messages field as an array of Message
   admin      User?     @relation(fields: [adminId], references: [id])
-  chatUser   ChatUser       @relation(fields: [chatUserId], references: [id])
+  chatUser   ChatUser  @relation(fields: [chatUserId], references: [id])
   chatUserId Int
 }
 
 // message.model.prisma
 model Message {
-  id             Int        @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId Int
   senderType     String
   content        String
-  createdAt      DateTime   @default(now())
+  createdAt      DateTime     @default(now())
 }
 
 model ArticleLink {
-  id             Int              @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   header         String
   link           String
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   userId         Int
-  user           User             @relation(fields: [userId], references: [id], name: "article")
-  apiKey         String         
-  apiKeyRelation ApiKey           @relation(fields: [apiKey], references: [key])
+  user           User     @relation(fields: [userId], references: [id], name: "article")
+  apiKey         String
+  apiKeyRelation ApiKey   @relation(fields: [apiKey], references: [key])
 }
 
 model UserPreferences {
-  id              Int              @id @default(autoincrement())
+  id              Int    @id @default(autoincrement())
   backgroundColor String
   textColor       String
   bannerColor     String
-  apiKey          String           @unique
-  userId          Int              @unique
-  apiKeyRelation  ApiKey           @relation(fields: [apiKey], references: [key])
-  user            User             @relation(fields: [userId], references: [id])
+  apiKey          String @unique
+  userId          Int    @unique
+  apiKeyRelation  ApiKey @relation(fields: [apiKey], references: [key])
+  user            User   @relation(fields: [userId], references: [id])
 }
 
 model ApiKey {
@@ -82,6 +80,27 @@ model ApiKey {
   userId          Int              @unique
   user            User             @relation(fields: [userId], references: [id])
   createdAt       DateTime         @default(now())
-  userPreferences UserPreferences? 
+  userPreferences UserPreferences?
   articleLinks    ArticleLink[]
+  questions       Question[]
+}
+
+model Question {
+  id               String   @id @default(uuid()) // Using UUID for ID
+  text             String
+  parentQuestionId String? // Self-referencing for nested questions
+  parentOptionId   String? // Linking to the parent option, if exists
+  apiKey           String // Relation to track which API key created this question
+  apiKeyRelation   ApiKey   @relation(fields: [apiKey], references: [key]) // Setting up the relation
+  options          Option[] // Each question has multiple options
+  nestedQuestions  Option[] @relation("NestedQuestions") // Relation for nested questions
+}
+
+model Option {
+  id             String    @id @default(uuid()) // Using UUID for option ID
+  text           String
+  questionId     String
+  question       Question  @relation(fields: [questionId], references: [id])
+  nextQuestionId String? // Linking to the next question if nested
+  nextQuestion   Question? @relation("NestedQuestions", fields: [nextQuestionId], references: [id]) // Relation to next question
 }

@@ -1,8 +1,0 @@
--- CreateTable
-CREATE TABLE "Bookmark" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "header" TEXT NOT NULL,
-    "link" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
-    CONSTRAINT "Bookmark_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
