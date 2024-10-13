@@ -29,7 +29,7 @@ export class ArticleController {
 
   @Patch(':id/:apiKey')
   async updateArticle(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Param('apiKey') apiKey: string,
     @Body() updateArticleDto: CreateArticleDto,
   ) {
@@ -38,7 +38,7 @@ export class ArticleController {
 
   @Delete(':id/:apiKey')
   async deleteArticle(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Param('apiKey') apiKey: string,
   ) {
     return this.articleService.deleteArticle(id, apiKey);

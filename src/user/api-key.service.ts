@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class ApiKeyService {
   constructor(private prisma: PrismaService) {}
-  async generateApiKey(userId: number): Promise<string> {
+  async generateApiKey(userId: string): Promise<string> {
     console.log("userId: ", userId); // Debugging statement
     if (!userId) {
       throw new Error('userId is undefined');

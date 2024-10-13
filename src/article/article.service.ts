@@ -38,7 +38,7 @@ export class ArticleService {
     });
   }
 
-  async updateArticle(id: number, apiKey: string, data: CreateArticleDto) {
+  async updateArticle(id: string, apiKey: string, data: CreateArticleDto) {
     const apiKeyRecord = await this.prisma.apiKey.findUnique({
       where: { key: apiKey },
     });
@@ -61,7 +61,7 @@ export class ArticleService {
     });
   }
 
-  async deleteArticle(id: number, apiKey: string) {
+  async deleteArticle(id: string, apiKey: string) {
     const apiKeyRecord = await this.prisma.apiKey.findUnique({
       where: { key: apiKey },
     });

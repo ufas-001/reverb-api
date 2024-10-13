@@ -36,7 +36,7 @@ export class UserService {
     });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -47,7 +47,7 @@ export class UserService {
     });
   }
 
-  async generateApiKey(userId: number): Promise<string> {
+  async generateApiKey(userId: string): Promise<string> {
     return await this.apiKeyService.generateApiKey(userId);
   }
 

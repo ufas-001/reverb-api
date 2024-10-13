@@ -8,13 +8,13 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get(':id')
-  async getUserProfile(@Param('id') id: number) {
+  async getUserProfile(@Param('id') id: string) {
     return await this.userService.findById(id);
   }
 
   @UseGuards(JwtGuard)
   @Get(':id/apikey')
-  async getApiKey(@Param('id', ParseIntPipe) id: number) {
+  async getApiKey(@Param('id') id: string) {
     const user = await this.userService.findById(id);
     if (!user) {
       throw new NotFoundException('User not found');
