@@ -19,7 +19,7 @@ export class ConversationController {
     }
 
     @Get('accepted/:adminId')
-    async getAcceptedConversations(@Param('adminId') adminId: number) {
+    async getAcceptedConversations(@Param('adminId') adminId: string) {
       return this.conversationService.getAcceptedConversations(adminId);
     }
 

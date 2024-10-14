@@ -107,7 +107,7 @@ export class ConversationService {
     }
   }
 
-  async getAcceptedConversations(adminId: number) {
+  async getAcceptedConversations(adminId: string) {
     try {
       // Get the IDs of accepted conversations from Redis
       const acceptedConversationIds = await this.redisService.getSetMembers(
