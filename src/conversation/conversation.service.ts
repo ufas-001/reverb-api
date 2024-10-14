@@ -173,7 +173,7 @@ export class ConversationService {
       return [];
     }
   }
-  async acceptConversationRequest(conversationId: string, adminId: number) {
+  async acceptConversationRequest(conversationId: string, adminId: string) {
     // Remove the conversation ID from the set of pending conversation requests
     await this.redisService.removeFromSet(
       'pendingConversationRequests',
